@@ -7,12 +7,12 @@ public class GamePanel extends JPanel implements ActionListener {
 
     static final int SCREEN_WIDTH = 600;
     static final int SCREEN_HEIGHT = 600;
-    static final int UNIT_SIZE = 25;
+    static final int UNIT_SIZE = 25;  // size of each comoponent of the snake 
     static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT) / (UNIT_SIZE*UNIT_SIZE);
-    static final int DELAY = 75;
+    static final int DELAY = 1000;  // delay between each movement of the snake
     final int x[] = new int[GAME_UNITS];
     final int y[] = new int[GAME_UNITS];
-    int bodyParts = 6;
+    int bodyParts = 6;   // initial length of the snake starts with 6 parts which are 25X25 units
     int applesEaten;
     int appleX;
     int appleY;
