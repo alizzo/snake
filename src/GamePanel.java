@@ -9,7 +9,7 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int SCREEN_HEIGHT = 600;
     static final int UNIT_SIZE = 25;  // size of each comoponent of the snake 
     static final int GAME_UNITS = (SCREEN_WIDTH*SCREEN_HEIGHT) / (UNIT_SIZE*UNIT_SIZE);
-    static final int DELAY = 1000;  // delay between each movement of the snake
+    static final int DELAY = 150;  // delay between each movement of the snake
 
     final int x[] = new int[GAME_UNITS];
     final int y[] = new int[GAME_UNITS];
@@ -141,19 +141,28 @@ public class GamePanel extends JPanel implements ActionListener {
 
         // check if head touches left border
         if (x[0] < 0) {
-            running = false;
+            //running = false;
+            //reposition the snake to the right border
+            x[0] = SCREEN_WIDTH - UNIT_SIZE;
+
         }//if
         // check if head touches right border
         if (x[0] > SCREEN_WIDTH) {
-            running = false;
+            //running = false;
+            //reposition the snake to the left border
+            x[0] = 0;
         }//if
         // check if head touches top border
         if (y[0] < 0) {
-            running = false;
+            //running = false;
+            //reposition the snake to the bottom border
+            y[0] = SCREEN_HEIGHT - UNIT_SIZE;
         }//if
         // check if head touches bottom border
         if (y[0] > SCREEN_HEIGHT) {
-            running = false;
+            //running = false;
+            //reposition the snake to the top border
+            y[0] = 0;
         }//if
 
         if (!running) {
