@@ -25,13 +25,17 @@ public class GamePanel extends JPanel implements ActionListener {
     GamePanel() {
         random = new Random();
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        this.setBackground(Color.black);
+        this.setBackground(new Color(120, 157, 108));
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
         startGame();
     }//GamePanel
 
     public void startGame() {
+        for (int i = 0; i < bodyParts; i++){
+            x[i] = 300; 
+            y[i] = 300;
+            }//for i
         newApple();
         running = true;
         timer = new Timer(DELAY, this);
@@ -46,28 +50,28 @@ public class GamePanel extends JPanel implements ActionListener {
     public void draw(Graphics g) {
         if (running) {
             // draw the apple
-            g.setColor(Color.red);
+            g.setColor(new Color(31, 39, 12));
             g.fillOval(appleX, appleY, UNIT_SIZE, UNIT_SIZE);
 
             // draw the snake
             for (int i = 0; i < bodyParts; i++) {
                 if (i == 0) 
                 {
-                    g.setColor(Color.green);
+                    g.setColor(new Color(57, 63, 39).brighter());
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 }//if 
                 else 
                 {
-                    g.setColor(new Color(45, 180, 0));
+                    g.setColor(new Color(31, 39, 12));
                     g.fillRect(x[i], y[i], UNIT_SIZE, UNIT_SIZE);
                 }//else
             }//for i
 
             // draw the score
-            g.setColor(Color.red);
+            g.setColor(new Color(31, 39, 12));
             g.setFont(new Font("Ink Free", Font.BOLD, 40));
             FontMetrics metrics = getFontMetrics(g.getFont());
-            g.drawString("Score: " + applesEaten, (SCREEN_WIDTH - metrics.stringWidth("Score: " + applesEaten))/2, g.getFont().getSize());
+            g.drawString("Score: " + applesEaten, 20, 30);
         }//if
         else 
         {
@@ -76,8 +80,10 @@ public class GamePanel extends JPanel implements ActionListener {
     }//draw
 
     public void newApple() {
+        do{
         appleX = random.nextInt((int)(SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE;
         appleY = random.nextInt((int)(SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE;
+        }while(appleY <= 40);
     }//newApple
 
     public void move() {
@@ -123,7 +129,9 @@ public class GamePanel extends JPanel implements ActionListener {
     }//move
 
     public void checkApple() {
-        if ((x[0] == appleX) && (y[0] == appleY)) {
+        Rectangle head = new Rectangle(x[0], y[0], UNIT_SIZE, UNIT_SIZE);
+        Rectangle apple = new Rectangle(appleX, appleY, UNIT_SIZE, UNIT_SIZE);;
+        if (head.intersects(apple)) {
             bodyParts++;
             applesEaten++;
             newApple();
@@ -153,7 +161,7 @@ public class GamePanel extends JPanel implements ActionListener {
             x[0] = 0;
         }//if
         // check if head touches top border
-        if (y[0] < 0) {
+        if (y[0] < 40) {
             //running = false;
             //reposition the snake to the bottom border
             y[0] = SCREEN_HEIGHT - UNIT_SIZE;
@@ -162,7 +170,7 @@ public class GamePanel extends JPanel implements ActionListener {
         if (y[0] > SCREEN_HEIGHT) {
             //running = false;
             //reposition the snake to the top border
-            y[0] = 0;
+            y[0] = 40;
         }//if
 
         if (!running) {
@@ -172,16 +180,20 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void gameOver(Graphics g) {
         // Score
-        g.setColor(Color.red);
+        g.setColor(new Color(31, 39, 12));
         g.setFont(new Font("Ink Free", Font.BOLD, 40));
         FontMetrics metrics1 = getFontMetrics(g.getFont());
-        g.drawString("Score: " + applesEaten, (SCREEN_WIDTH - metrics1.stringWidth("Score: " + applesEaten))/2, g.getFont().getSize());
+        g.drawString("Score: " + applesEaten, 20, 30);
 
         // Game Over text
-        g.setColor(Color.red);
+        g.setColor(new Color(31, 39, 12));
         g.setFont(new Font("Ink Free", Font.BOLD, 75));
         FontMetrics metrics2 = getFontMetrics(g.getFont());
         g.drawString("Game Over", (SCREEN_WIDTH - metrics2.stringWidth("Game Over"))/2, SCREEN_HEIGHT/2);
+
+        g.setFont(new Font("Ink Free", Font.BOLD, 35));
+        g.drawString("Play Again?(Press Space)", (SCREEN_WIDTH - metrics2.stringWidth("Game Over"))/2 + 50, SCREEN_HEIGHT/2 + 60);
+        g.drawString("Give Up?(Press Esc)",(SCREEN_WIDTH - metrics2.stringWidth("Game Over"))/2 + 50, SCREEN_HEIGHT/2 + 120);
     }//gameOver
 
     @Override
@@ -199,54 +211,68 @@ public class GamePanel extends JPanel implements ActionListener {
         boolean rightPressed = false;
         boolean upPressed = false;
         boolean downPressed = false;
+        int i = 0;
         @Override
         public void keyPressed(KeyEvent e) {
             switch(e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    if (!rightPressed) {
+                    if (direction != 'R' && direction != 'C' && direction != 'E') {
                         leftPressed = true;
                     }//if
                     break;
                 case KeyEvent.VK_RIGHT:
-                    if (!leftPressed) {
+                    if (direction != 'L' && direction != 'Q' && direction != 'Z') {
                         rightPressed = true;
                     }//if
                     break;
                 case KeyEvent.VK_UP:
-                    if (!downPressed) {
+                    if (direction != 'D' && direction != 'C' && direction != 'Z') {
                         upPressed = true;
                     }//if
                     break;
                 case KeyEvent.VK_DOWN:
-                    if (!upPressed) {
+                    if (direction != 'U' && direction != 'E' && direction != 'Q') {
                         downPressed = true;
                     }//if
                     break;
+                case KeyEvent.VK_SPACE:
+                    if(!running)
+                    {
+                        bodyParts = 6;
+                        applesEaten = 0;
+                        direction = 'R';
+                        startGame();
+                    }//if
+                case KeyEvent.VK_ESCAPE:
+                    if(!running)
+                    {
+                        System.exit(0);
+                    }
             }//switch
-            if(rightPressed && upPressed){
+            if(rightPressed && upPressed && direction != 'Z'){
                 direction = 'E';
             }//if
-            else if(rightPressed && downPressed){
+            else if(rightPressed && downPressed && direction != 'Q'){
                 direction = 'C';
             }//else if
-            else if(leftPressed && upPressed){
+            else if(leftPressed && upPressed && direction != 'C'){
                 direction = 'Q';
             }//else if
-            else if(leftPressed && downPressed){
+            else if(leftPressed && downPressed && direction != 'E'){
                 direction = 'Z';
             }//else if
-            else if(rightPressed){
+            else if(rightPressed && direction != 'L'){
                 direction = 'R';
             }//else if
-            else if(leftPressed){
+            else if(leftPressed && direction != 'R'){
                 direction = 'L';
             }//else if
-            else if(upPressed){
+            else if(upPressed && direction != 'D'){
                 direction = 'U';
             }//else if
-            else if(downPressed){
+            else if(downPressed && direction != 'U'){
                 direction = 'D';
-            }
+            }//else if
         }//keyPressed
 
         @Override
@@ -266,6 +292,18 @@ public class GamePanel extends JPanel implements ActionListener {
                     downPressed = false;
                     break;
             }//switch
+            if(rightPressed && direction != 'L'){
+                direction = 'R';
+            }//else if
+            else if(leftPressed && direction != 'R'){
+                direction = 'L';
+            }//else if
+            else if(upPressed && direction != 'D'){
+                direction = 'U';
+            }//else if
+            else if(downPressed && direction != 'U'){
+                direction = 'D';
+            }//else if
         }//keyReleased
     }//MyKeyAdapter
 }//GamePannel
